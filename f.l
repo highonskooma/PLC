@@ -20,10 +20,12 @@ void display();
 %option stack
 %s date
 %s name
+
 digito    [0-9]
 acentos   \xc3[\x80-\xbf]       
 letra     [a-zA-Z]|{acentos}       
-palavra   {letra}+            
+palavra   {letra}+        
+ban       "Conta desactivada por violação das regras de conduta"    
 
    
 %%
@@ -33,21 +35,22 @@ ER               { ECHO; /*imprime na saida ER (em geral a Expressao Regular enc
 .|\n             { ; /*suprime da saida qualquer outro carater incluindo o NewLine*/ } 
 [" "]+           { yy_push_state(date); }
 \[{digito}+\]    { yy_push_state(name); }
+{ban} {              
+	k=strdup(yytext);
+	insert(j,p2,k);
+	j++;
+}
 
 <date>{digito}{2}\.{digito}{2}\.{digito}{4}[" "]{digito}{2}[":"]{digito}{2}$ { 
 	k=strdup(yytext);
 	insert(i,p1,k);
-	i++;
-	printf("%s\n",yytext);	
+	i++;	
 	yy_pop_state();
-	printf("\n");
 }
 <name>.*$ {
 	k = strdup(yytext);
 	insert(j,p2,k);
-	printf("%d\n",j);
 	j++;
-	printf("%s\n",yytext);
 	yy_pop_state();
 } 
 %%
@@ -137,15 +140,17 @@ struct DataItem* delete(struct DataItem* item) {
 }
 
 void display() {
-   	int c = 0;
+   	int c = 1;
+	int t = 1;
 	FILE *d;
    	d = fopen("/home/blackgaze/Desktop/Documents/PLC/TP1/mary.json","a");
-   	for(c = 0; c<478; c++) {
+   	for(c = 1; c<482; c++) {
+		if(c%2!=0){fprintf(d,"{");}
         	if(hashArray[c] != NULL){
-        		fprintf(d," (%s,%s)\n",hashArray[c]->obj,hashArray[c]->info);
+        		fprintf(d," %s:%s ,",hashArray[c]->obj,hashArray[c]->info);
+			if(c%2==0){fprintf(d," id:%d }\n",t);t++;}
    		}
 	}
-   	printf("%d\n",c);
    	fclose(d);
 }
 
