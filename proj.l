@@ -1,6 +1,8 @@
 %{
 int i=1;
 int j=1;
+int o=1;
+int r=1;
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,8 +13,12 @@ char *strdup(const char *s1);
 const char* YYText();
 char d[5]="date\0";
 char n[5]="name\0";
+char g[10]="timestamp\0";
+char y[8]="comment\0";
 char *p1 = &d[0];
 char *p2 = &n[0];
+char *p3 = &g[0];
+char *p4 = &y[0];
 void insert(int key,char object[],char info[]);
 void display();
 %}
@@ -20,28 +26,40 @@ void display();
 %option stack
 %s date
 %s name
+%s comment
+%s time
 
 digito    [0-9]
 acentos   \xc3[\x80-\xbf]       
 letra     [a-zA-Z]|{acentos}       
 palavra   {letra}+        
 ban       "Conta desactivada por violação das regras de conduta"    
-
+ddmmyyyy  {digito}{2}\.{digito}{2}\.{digito}{4}
+timestamp {digito}{2}[":"]{digito}{2}$
    
 %%
 ER               { ECHO; /*imprime na saida ER (em geral a Expressao Regular encontrada na entrada*/ }
 {digito}+        { ; /*encontrei um NUMERO*/ }
 {palavra}        { ; /*encontrei uma PALAVRA*/ }
 .|\n             { ; /*suprime da saida qualquer outro carater incluindo o NewLine*/ } 
-[" "]+           { yy_push_state(date); }
 \[{digito}+\]    { yy_push_state(name); }
 {ban} {              
 	k=strdup(yytext);
 	insert(j,p2,k);
 	j++;
 }
+{timestamp}     {
+	k=strdup(yytext);
+	insert(o,p3,k);
+	o++;
+	yy_push_state(comment);
+}
 
-<date>{digito}{2}\.{digito}{2}\.{digito}{4}[" "]{digito}{2}[":"]{digito}{2}$ { 
+<comment>{digito}+\.$ {  yy_pop_state(); }
+
+<comment>({palavra}|[ ]|[;�?.,!/\-\"\'\(\)\:])+ { k=strdup(yytext); insert(r,p4,k); r++;}
+
+<date>{ddmmyyyy} { 
 	k=strdup(yytext);
 	insert(i,p1,k);
 	i++;	
@@ -52,10 +70,11 @@ ER               { ECHO; /*imprime na saida ER (em geral a Expressao Regular enc
 	insert(j,p2,k);
 	j++;
 	yy_pop_state();
+	yy_push_state(date);
 } 
 %%
 
-#define SIZE 502
+#define SIZE 1004
 
 struct DataItem {
    int key;   
@@ -144,13 +163,15 @@ void display() {
 	int t = 1;
 	FILE *d;
    	d = fopen("/home/blackgaze/Desktop/Documents/PLC/TP1/mary.json","a");
-   	for(c = 1; c<482; c++) {
-		if(c%2!=0){fprintf(d,"{");}
+	fprintf(d,"[\n");
+   	for(c = 1; c<960; c++) {
         	if(hashArray[c] != NULL){
         		fprintf(d," %s:%s ,",hashArray[c]->obj,hashArray[c]->info);
-			if(c%2==0){fprintf(d," id:%d }\n",t);t++;}
+			if(c%4==0){fprintf(d,"\n id:%d ",t);t++;}
    		}
+		fprintf(d,"\n");
 	}
+	fprintf(d,"]");
    	fclose(d);
 }
 
@@ -159,7 +180,7 @@ int yywrap()
 
 int main() {
     	yylex();
-	display();
+	//display();
 }
 
 
