@@ -1,0 +1,34 @@
+start
+pushi 1
+pushi 1
+pushi 2
+pushi 1
+pushi 1
+pushi 1
+equal
+not
+not
+pushi 1
+pushi 2
+equal
+not
+not
+mul
+not
+not
+pushi 1
+pushi 1
+equal
+not
+not
+mul
+pushi 1 
+jz ELSE0 
+pushs "pode ser quadrado\n" 
+writes 
+jump ENDIF0 
+ELSE0: 
+pushs "nao pode ser quadrado\n" 
+writes 
+ENDIF0: 
+stop
