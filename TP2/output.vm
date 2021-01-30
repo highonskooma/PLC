@@ -1,0 +1,45 @@
+start
+pushi 0
+pushi 0
+pushi 0
+pushs "escolha um inteiro "
+writes
+read
+atoi
+storeg 0
+pushi 1
+storeg 2
+pushi 1
+storeg 1
+inicio: 
+pushg 1
+
+pushg 0
+
+infeq 
+jz IF0 
+pushg 2
+
+pushg 1
+
+mul
+storeg 2
+
+pushg 1
+
+pushi 1
+add
+storeg 1
+
+ 
+jump inicio 
+IF0: 
+
+pushs "o produtório é: "writes
+
+stri
+writes
+pushs "\n"
+writes
+
+stop
