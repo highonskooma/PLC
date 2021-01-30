@@ -1,0 +1,12 @@
+int n
+int t
+int r
+scan()
+r=1;
+t=1;
+prod(n){
+    while (t<=n) do { 
+        r=r*t;
+        t=t+1; 
+    } 
+}

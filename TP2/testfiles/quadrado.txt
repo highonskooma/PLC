@@ -1,0 +1,12 @@
+int a
+int b
+int c
+int d
+int r
+a=2;
+b=2;
+c=2;
+d=2;
+quad(a,b,c,d) {
+if ((a==b)e(a==c)e(a==d)) do {r=1;} else {r=0;}
+}
