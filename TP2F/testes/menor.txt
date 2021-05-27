@@ -1,0 +1,12 @@
+int a int c
+int b
+a=20;
+b=10;
+while (b!=0) do {
+    scan(b)
+    b=b div 2; printM()
+    a=b;
+    printM()
+    if ((a>b)e(b!=0)) do {a=b;} 
+}
+printM()

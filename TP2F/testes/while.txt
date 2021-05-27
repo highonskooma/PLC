@@ -1,0 +1,8 @@
+int a
+int b
+a=2;
+b=1;
+while (b!=4) do { 
+    b=b+1; 
+    a=a*2;
+} 

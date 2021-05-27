@@ -1,0 +1,13 @@
+int x
+int b
+int i
+int r
+scanb(b)
+scane(x)
+r=b;
+i=1;
+while (i<x) do {
+    r=r*b;
+    i=i+1;
+}
+print()
